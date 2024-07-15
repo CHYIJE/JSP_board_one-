@@ -20,7 +20,8 @@ public class UserRepositoryImpl implements UserRepository {
 	
 	
 	@Override
-	public void addUser(User user) {
+	public int addUser(User user) {
+		int rowCount = 0;
 		try (Connection conn = DBUtil.getConnection()){
 			conn.setAutoCommit(false);
 			// username 중복 확인 필요
@@ -29,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
 				pstmt.setString(1, user.getUsername());
 				pstmt.setString(2, user.getPassword());
 				pstmt.setString(3, user.getEmail());
-				pstmt.executeUpdate();		
+				rowCount = pstmt.executeUpdate();		
 				conn.commit();
 			} catch (Exception e) {
 				conn.rollback();
@@ -38,6 +39,7 @@ public class UserRepositoryImpl implements UserRepository {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return rowCount;
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class UserRepositoryImpl implements UserRepository {
 						.username(rs.getString("username"))
 						.password(rs.getString("password"))
 						.email(rs.getString("email"))
-						.createdAt(rs.getTimestamp("created-at"))
+						.createdAt(rs.getTimestamp("created_at"))
 						.build();
 			}
 			

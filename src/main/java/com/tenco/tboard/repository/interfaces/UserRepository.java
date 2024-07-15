@@ -6,7 +6,7 @@ import com.tenco.tboard.model.User;
 
 public interface UserRepository {
 	
-	void addUser(User user);
+	int addUser(User user);
 	void deletUser(int id);
 	User getUserByusername(String username);
 	User getUserByusernameAndPassword(String username, String password);
