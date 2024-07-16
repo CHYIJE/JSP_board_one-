@@ -23,8 +23,10 @@
 			<p>${board.content}</p>
 			<p><fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:MM"/> </p>
 			<!-- 게시글의 작성자가 세션 유저와 동일하다면 수정, 삭제 버튼을 보여주자 -->
+			<c:if test="${board.userId == userId}">
 			<a class="btn btn-edit" herf="#">수정</a>
-			<a class="btn btn-delete" herf="#">삭제</a>
+			<a class="btn btn-delete" herf="#">삭제</a>			
+			</c:if>
 		</div>
 	</c:forEach>	
 

@@ -5,10 +5,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.List;
 
 import com.tenco.tboard.model.Board;
+import com.tenco.tboard.model.User;
 import com.tenco.tboard.repository.BoardRepositoryImpl;
 import com.tenco.tboard.repository.interfaces.BoardRepository;
 
@@ -25,13 +28,18 @@ public class BoardController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getPathInfo();
+		HttpSession session = request.getSession(false);
+		if(session == null || session.getAttribute("principal") == null) {
+			response.sendRedirect(request.getContextPath() + "/user/signin");
+			return;
+		}
 		
 		switch (action) {
 		case "/creat":
 			// TODO 게시글 생성 페이지 이동 처리
 			break;
 		case "/list":
-				handleListBoards(request, response);
+				handleListBoards(request, response, session);
 			break;
 
 		default:
@@ -46,7 +54,7 @@ public class BoardController extends HttpServlet {
 	 * @throws IOException 
 	 * @throws ServletException 
 	 */
-	private void handleListBoards(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void handleListBoards(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException {
 		/**
 		 * 
 		select * 
@@ -90,8 +98,15 @@ public class BoardController extends HttpServlet {
 		
 		request.setAttribute("boardList", boardList);
 		request.setAttribute("totalPages", totalPages);
-		System.out.println("총 페이지 블록수 : " + totalPages );
 		request.setAttribute("currentPage", page);
+		
+		// 현재 로그인한 사용자 ID 설정
+		if(session != null) {
+			User user = (User)session.getAttribute("principal");
+			if(user != null) {
+				request.setAttribute("userId", user.getId());
+			}
+		}
 		
 		request.getRequestDispatcher("/WEB-INF/views/board/list.jsp").forward(request, response);
 	}

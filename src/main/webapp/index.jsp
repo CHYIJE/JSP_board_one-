@@ -44,8 +44,8 @@ body{
 		<ul class="nav-list">
 			<li class="btn btn-primary"><a href="/t-board/user/signup">회원가입</a></li>
 			<li class="btn btn-primary"><a href="/t-board/user/signin">로그인</a></li>
-			<li class="btn btn-secondary"><a href="/t-board/user/signup">로그아웃</a></li>
-			<li class="btn btn-primary"><a href="/t-board/user/list">게시판 목록</a></li>
+			<li class="btn btn-secondary"><a href="/t-board/user/logout">로그아웃</a></li>
+			<li class="btn btn-primary"><a href="/t-board/board/list">게시판 목록</a></li>
 		</ul>
 	</div>
 </body>
