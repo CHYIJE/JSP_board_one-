@@ -123,9 +123,22 @@ public class BoardController extends HttpServlet {
 	 */
 	private void handleDeleteBoard(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		// TODO Auto-generated method stub
-		
+		try {
+			int id = Integer.parseInt(request.getParameter("id"));
+			Board board = boardRepository.getBoardById(id);
+			boardRepository.deleteBoard(id);
+			
+			
+			response.sendRedirect(request.getContextPath() + "/board/list");
+			
+			
+		} catch (Exception e) {
+			// 잘못된 접근입니다.
+			System.out.println("ㅋㅋ");
+			e.printStackTrace();
+		}
 	}
-
+	
 
 	/**
 	 * 게시글 생성 화면 이동

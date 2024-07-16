@@ -178,6 +178,7 @@
     <c:if test="${board.userId == userId}">
         <a class="btn btn-edit" href="${pageContext.request.contextPath}/board/edit?id=${board.id}">수정</a>
         <a class="btn btn-delete" href="${pageContext.request.contextPath}/board/delete?id=${board.id}">삭제</a>
+        
     </c:if>
 
     <a class="btn btn-return" href="${pageContext.request.contextPath}/board/list?page=1">목록으로 돌아가기</a>
