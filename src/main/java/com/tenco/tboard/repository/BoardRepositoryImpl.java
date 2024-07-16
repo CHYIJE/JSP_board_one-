@@ -15,7 +15,10 @@ public class BoardRepositoryImpl implements BoardRepository {
 	private static final String SELECT_ALL_BOARDS = " SELECT * FROM board ORDER BY created_at desc limit ? offset ? ";
 	private static final String COUNT_ALL_BOARDS = " SELECT COUNT(*) as count FROM board ";
 	private static final String INSERT_BOARD_SQL = " INSERT INTO board(user_id, title, content) VALUE (?, ?, ?) ";
-
+	private static final String DELETE_BOARD_SQL = " DELETE FROM board WHERE id = ? ";
+	private static final String SELECT_BOARD_BY_ID = " SELECT * FROM board WHERE id = ? ";
+	private static final String UPDATE_BOARD_SQL = " UPDATE board SET title = ?, content = ? WHERE id = ? ";
+	
 	@Override
 	public void addBoard(Board board) {
 		// 트랜잭션 - 논리적인 하나의 작업의 단위
@@ -41,19 +44,69 @@ public class BoardRepositoryImpl implements BoardRepository {
 	}
 
 	@Override
-	public void updateBoard(Board board, int principalId) {
-
+	public void updateBoard(Board board) {
+		try (Connection conn = DBUtil.getConnection()){
+			conn.setAutoCommit(false);
+			
+			try (PreparedStatement pstmt = conn.prepareStatement(UPDATE_BOARD_SQL)){
+				pstmt.setString(1, board.getTitle());
+				pstmt.setString(2, board.getContent());
+				pstmt.setInt(3, board.getId());
+				pstmt.executeUpdate();
+				conn.commit();
+			} catch (Exception e) {
+				conn.rollback();
+				e.printStackTrace();
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override
-	public void deleteBoard(int id, int principalId) {
-
+	public void deleteBoard(int id) {
+		try (Connection conn = DBUtil.getConnection()){
+			conn.setAutoCommit(false);
+			try (PreparedStatement pstmt = conn.prepareStatement(DELETE_BOARD_SQL)){
+				pstmt.setInt(1, id);
+				pstmt.executeUpdate();
+				conn.commit();
+			} catch (Exception e) {
+				conn.rollback();
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public Board getBoardById(int id) {
-
-		return null;
+		Board board = null;
+		try (Connection conn = DBUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(SELECT_BOARD_BY_ID)){
+			pstmt.setInt(1, id);
+			
+			try (ResultSet rs = pstmt.executeQuery()){
+				if (rs.next()) {
+					board = Board.builder()
+							.id(rs.getInt("id"))
+							.userId(rs.getInt("user_id"))
+							.title(rs.getString("title"))
+							.content(rs.getString("content"))
+							.createdAt(rs.getTimestamp("created_at"))
+							.build();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return board;
 	}
 
 	@Override

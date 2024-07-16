@@ -19,7 +19,7 @@
 	
 	<c:forEach var="board" items="${boardList}">
 		<div class="board-item"> 
-			<h3><a href="#">${board.title}</a></h3>
+			<h3><a href="${pageContext.request.contextPath}/board/view?id=${board.id}">${board.title}</a></h3>
 			<p>${board.content}</p>
 			<p><fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:MM"/> </p>
 			<!-- 게시글의 작성자가 세션 유저와 동일하다면 수정, 삭제 버튼을 보여주자 -->
