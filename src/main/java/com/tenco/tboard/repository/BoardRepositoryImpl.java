@@ -14,9 +14,29 @@ public class BoardRepositoryImpl implements BoardRepository {
 
 	private static final String SELECT_ALL_BOARDS = " SELECT * FROM board ORDER BY created_at desc limit ? offset ? ";
 	private static final String COUNT_ALL_BOARDS = " SELECT COUNT(*) as count FROM board ";
+	private static final String INSERT_BOARD_SQL = " INSERT INTO board(user_id, title, content) VALUE (?, ?, ?) ";
 
 	@Override
 	public void addBoard(Board board) {
+		// 트랜잭션 - 논리적인 하나의 작업의 단위
+		try (Connection conn = DBUtil.getConnection()){
+			conn.setAutoCommit(false);
+			
+			try (PreparedStatement pstmt = conn.prepareStatement(INSERT_BOARD_SQL)){
+				pstmt.setInt(1, board.getUserId());
+				pstmt.setString(2, board.getTitle());
+				pstmt.setString(3, board.getContent());
+				pstmt.executeUpdate();
+				conn.commit();
+			} catch (Exception e) {
+				conn.rollback();
+				e.printStackTrace();
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 

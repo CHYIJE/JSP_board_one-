@@ -36,16 +36,28 @@ public class BoardController extends HttpServlet {
 		
 		switch (action) {
 		case "/creat":
-			// TODO 게시글 생성 페이지 이동 처리
+			showCreateBoardForm(request, response, session);
 			break;
 		case "/list":
-				handleListBoards(request, response, session);
+			handleListBoards(request, response, session);
 			break;
 
 		default:
 			break;
 		}
 	}
+	/**
+	 * 게시글 생성 화면 이동
+	 * @param request
+	 * @param response
+	 * @param session
+	 * @throws IOException 
+	 * @throws ServletException 
+	 */
+	private void showCreateBoardForm(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException {
+		request.getRequestDispatcher("/WEB-INF/views/board/create.jsp").forward(request, response);
+	}
+
 	
 	/**
 	 * 페이징 처리 하기
@@ -112,7 +124,55 @@ public class BoardController extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String action = request.getPathInfo();
+		HttpSession session = request.getSession(false);
+		if(session == null || session.getAttribute("principal") == null) {
+			response.sendRedirect(request.getContextPath() + "/user/signin");
+			return;
+		}
+		
+		switch (action) {
+		case "/create":
+			handleCreateBoard(request, response, session);
+			break;
+		case "/edit":
+			// TODO 수정하기
+			break;
+			
+		case "/addCommet":
+			// TODO 댓글달기
+			break;
+			
+		default:
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			break;
+		}
+	}
 	
+	/**
+	 * 게시글 생성 처리
+	 * @param request
+	 * @param response
+	 * @param session
+	 * @throws IOException 
+	 */
+	private void handleCreateBoard(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+		
+		//유효성 검사 생략
+		String title = request.getParameter("title");
+		String content = request.getParameter("content");
+		User user = (User)session.getAttribute("principal");
+		
+		Board board = Board.builder()
+				.userId(user.getId())
+				.title(title)
+				.content(content)
+				.build();
+		
+		boardRepository.addBoard(board);
+		
+		response.sendRedirect(request.getContextPath() + "/board/list?page=1");
+		
 	}
 
 }
