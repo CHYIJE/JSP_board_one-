@@ -6,8 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>회원가입</title>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resouces/css/common.css">
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resouces/css/signIn.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resource/css/common.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resource/css/signIn.css">
 </head>
 <body>
 	<div class="container">
