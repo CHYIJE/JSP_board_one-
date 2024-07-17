@@ -1,202 +1,196 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>${board.title}</title>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+/* common styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
 
-    body {
-        font-family: 'Noto Serif JP', serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-        background-image: url('https://path/to/japanese/pattern/background.jpg'); /* 배경 이미지 URL 수정 */
-        background-size: cover;
-        background-attachment: fixed;
-    }
+.container {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
 
-    .container {
-        max-width: 800px;
-        margin: 50px auto;
-        background: rgba(255, 255, 255, 0.9); /* 반투명 배경 */
-        padding: 40px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
-        border: 2px solid #2c3e50;
-    }
+h2, h3 {
+    color: #343a40;
+}
 
-    h2 {
-        color: #2c3e50;
-        font-size: 32px;
-        border-bottom: 2px solid #e74c3c;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-        font-family: 'Kaushan Script', cursive;
-    }
+p {
+    color: #6c757d;
+}
 
-    p {
-        color: #333;
-        line-height: 1.8;
-        font-size: 18px;
-        margin: 20px 0;
-    }
+a {
+    text-decoration: none;
+}
 
-    .btn {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 12px 25px;
-        text-decoration: none;
-        color: #fff;
-        background-color: #e74c3c;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        font-size: 16px;
-    }
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #007bff;
+    text-align: center;
+}
 
-    .btn:hover {
-        background-color: #c0392b;
-        transform: translateY(-3px);
-    }
+.btn:hover {
+    background-color: #0056b3;
+}
 
-    .btn-edit {
-        background-color: #27ae60;
-    }
+.btn-edit {
+    background-color: #28a745;
+}
 
-    .btn-edit:hover {
-        background-color: #1e8449;
-    }
+.btn-edit:hover {
+    background-color: #218838;
+}
 
-    .btn-delete {
-        background-color: #e74c3c;
-    }
+.btn-delete {
+    background-color: #dc3545;
+}
 
-    .btn-delete:hover {
-        background-color: #c0392b;
-    }
+.btn-delete:hover {
+    background-color: #c82333;
+}
 
-    .btn-return {
-        background-color: #3498db;
-        color: #fff;
-    }
+.btn-list {
+    background-color: #17a2b8;
+}
 
-    .btn-return:hover {
-        background-color: #2980b9;
-    }
+.btn-list:hover {
+    background-color: #138496;
+}
 
-    h3 {
-        color: #2c3e50;
-        margin-top: 50px;
-        font-size: 24px;
-        border-bottom: 2px solid #3498db;
-        padding-bottom: 10px;
-        font-family: 'Kaushan Script', cursive;
-    }
+/* view specific styles */
+h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
 
-    .comments {
-        margin-top: 30px;
-    }
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}
 
-    .comment {
-        margin-bottom: 20px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.9); /* 반투명 배경 */
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        border: 1px solid #ddd;
-    }
+p small {
+    display: block;
+    margin-top: 10px;
+    color: #6c757d;
+}
 
-    .comment-author {
-        font-weight: bold;
-        color: #2c3e50;
-        font-size: 16px;
-    }
+.btn {
+    font-size: 1em;
+}
 
-    .comment-content {
-        margin-top: 10px;
-        color: #555;
-        font-size: 14px;
-    }
+h3 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
 
-    .comment-date {
-        font-size: 12px;
-        color: #999;
-        margin-top: 5px;
-    }
+/* comment form styles */
+.comment-section {
+    margin-top: 30px;
+}
 
-    .comment-form {
-        margin-top: 40px;
-        background: rgba(255, 255, 255, 0.9); /* 반투명 배경 */
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        border: 1px solid #ddd;
-    }
+.comment-list {
+    margin-bottom: 20px;
+}
 
-    .comment-form textarea {
-        width: 100%;
-        height: 120px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        resize: vertical;
-        font-size: 14px;
-        margin-bottom: 10px;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
+.comment {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
 
-    .comment-form button {
-        padding: 12px 25px;
-        color: #fff;
-        background-color: #e74c3c;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        font-size: 16px;
-    }
+.comment .comment-author {
+    font-weight: bold;
+    color: #343a40;
+}
 
-    .comment-form button:hover {
-        background-color: #c0392b;
-        transform: translateY(-3px);
-    }
+.comment .comment-date {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.comment .comment-content {
+    margin-top: 10px;
+    font-size: 1.1em;
+}
+
+.comment-form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-form textarea {
+    padding: 10px;
+    font-size: 1em;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.comment-form button {
+    align-self: flex-start;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #218838;
+}
 </style>
 </head>
 <body>
     <div class="container">
         <h2>${board.title}</h2>
         <p>${board.content}</p>
-        <p><fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:MM"/> </p>
+        <p>
+            <fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:mm" />
+        </p>
+        <c:if test="${board.userId == principal.id}">
+            <a class="btn btn-edit" href="${pageContext.request.contextPath}/board/edit?id=${board.id}">수정</a>
+            <a class="btn btn-delete" href="${pageContext.request.contextPath}/board/delete?id=${board.id}">삭제</a>
+        </c:if>
+        <a class="btn btn-list" href="${pageContext.request.contextPath}/board/list?page=1">목록으로 돌아가기</a>
     </div>
-    <c:if test="${board.userId == userId}">
-        <a class="btn btn-edit" href="${pageContext.request.contextPath}/board/edit?id=${board.id}">수정</a>
-        <a class="btn btn-delete" href="${pageContext.request.contextPath}/board/delete?id=${board.id}">삭제</a>
+
+    <div class="container comment-section">
+        <h3>댓글</h3>
+        <!-- 댓글 리스트 -->
+        <div class="comment-list">
+	   		<c:forEach  var="comment"   items="${commentList}">
+	         <div class="comment">
+	             <div class="comment-author">${comment.username}</div>
+	             <div class="comment-date">${comment.createdAt}</div>
+	             <div class="comment-content">${comment.content}</div>
+	         </div>          		
+	   		</c:forEach>
+        </div>
         
-    </c:if>
-
-    <a class="btn btn-return" href="${pageContext.request.contextPath}/board/list?page=1">목록으로 돌아가기</a>
-
-    <h3>댓글</h3>
-    <div class="comments">
-        <c:forEach var="comment" items="${comments}">
-            <div class="comment">
-                <div class="comment-author">${comment.author}</div>
-                <div class="comment-content">${comment.content}</div>
-                <div class="comment-date"><fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:MM"/></div>
-            </div>
-        </c:forEach>
-    </div>
-
-    <div class="comment-form">
-        <form action="${pageContext.request.contextPath}/board/comment" method="post">
-            <textarea name="content" placeholder="댓글을 작성하세요..."></textarea>
+        <!-- 댓글 작성 폼 -->
+        <form class="comment-form" action="${pageContext.request.contextPath}/comment/add" method="post">
+            <textarea name="content" rows="4" placeholder="댓글을 작성하세요..." required></textarea>
             <button type="submit">댓글 작성</button>
         </form>
     </div>

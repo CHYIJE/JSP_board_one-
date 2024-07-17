@@ -11,18 +11,23 @@ import java.io.IOException;
 import java.util.List;
 
 import com.tenco.tboard.model.Board;
+import com.tenco.tboard.model.Comment;
 import com.tenco.tboard.model.User;
 import com.tenco.tboard.repository.BoardRepositoryImpl;
+import com.tenco.tboard.repository.CommentRepositoryImpl;
 import com.tenco.tboard.repository.interfaces.BoardRepository;
+import com.tenco.tboard.repository.interfaces.CommentRepository;
 
 @WebServlet("/board/*")
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private BoardRepository boardRepository;
+	private CommentRepository commentRepository;
        
     @Override
     public void init() throws ServletException {
     	boardRepository = new BoardRepositoryImpl();
+    	commentRepository = new CommentRepositoryImpl();
     	// BoardRepository 추가 예정
     }
 
@@ -78,8 +83,8 @@ public class BoardController extends HttpServlet {
 	 */
 	private void showViewBoard(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		try {
-			int id = Integer.parseInt(request.getParameter("id"));
-			Board board = boardRepository.getBoardById(id);
+			int boardId = Integer.parseInt(request.getParameter("id"));
+			Board board = boardRepository.getBoardById(boardId);
 			if(board == null) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
@@ -93,6 +98,8 @@ public class BoardController extends HttpServlet {
 			
 			// TODO - 댓글 조회
 			// 댓글 조회 및 권한 환인 추가 예정
+			List<Comment> commentList = commentRepository.getCommentsByBoardId(boardId);
+			request.setAttribute("commentList", commentList);
 			
 			request.getRequestDispatcher("/WEB-INF/views/board/view.jsp").forward(request, response);
 			
